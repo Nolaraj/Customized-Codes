@@ -1,0 +1,75 @@
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
+
+import docx
+import os
+from docx import Document
+
+import random
+from time import sleep
+
+
+def random_sleep(list1, iteration):
+    a = 2
+    b = 3
+    if iteration in list1:
+        print(iteration)
+        a = 0
+        b = 8
+    else:
+        a = 2
+        b = 5
+
+    random0 = random.randint(a, b)
+    random1 = random.randint(0, 10)
+    random2 = random.randint(0, 100)
+    sleep_time = random0 + (random1 * 1.25 / 7) + (random2 * 1.3 / 141)
+    return sleep_time
+
+# selenium
+delay = 5
+PATH = 'C:\Program Files (x86)\chromedriver.exe'
+driver = webdriver.Chrome(PATH)
+driver.get("https://scholar.google.com/")
+
+## Word Module Initialization
+
+#Please provide the path according to the position of the Word Document
+path = os.path.join((os.environ['USERPROFILE']), 'Documents', "Uncle Research", "Refrances_NPP.docx")
+document = Document(path)
+
+#Data Extraction
+list = []
+for i in range(0, 20):
+    list.append(random.randint(0, 100))
+list1 = []
+for i in list:
+    if i not in list1:
+        list1.append(i)
+
+for i in range(0,2):# len(document.paragraphs)):  # Remove 2):#  to launch for the whole document iteration
+    sleep(random_sleep(list1, i))
+    search_value = document.paragraphs[i].text
+    search = driver.find_element(by=By.NAME, value="q")
+    search.clear()
+    search.send_keys(search_value)
+    search.send_keys(Keys.RETURN)
+
+    WebDriverWait(driver, delay).until(
+        EC.presence_of_element_located((By.LINK_TEXT, 'Cite'))).click()
+
+    WebDriverWait(driver, delay).until(
+        EC.presence_of_element_located((By.LINK_TEXT, 'RefMan'))).click()
+
+    sleep(random_sleep(list1, i))
+    driver.back()
+
+
+
+
+
+

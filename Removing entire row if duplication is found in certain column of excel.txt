@@ -1,0 +1,41 @@
+from openpyxl import *
+import os
+
+#___ Enter The Following Credentials
+file_name = "Megh_Data.xlsx"
+
+file_location = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Documents', 'Uncle Research')
+os.chdir(file_location)
+
+file_path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Documents', 'Uncle Research', file_name)
+wb = load_workbook(file_path,data_only=True) #If data only is false it shows the formula of the cell
+ws_write = wb.create_sheet("Result 1")
+ws_read = wb["Megh_Data"]
+
+last_row =  len(list(ws_read.rows))
+last_col = len(list(ws_read.columns))
+
+starting_row = 1
+write_row = 2
+
+x = ws_read.cell(row=1, column=5).value
+y = ws_read.cell(row=1, column=6).value
+
+# Writing Title bar
+for j in range(1, last_col):
+    ws_write.cell(row=1, column=j).value = ws_read.cell(row=1, column=j).value
+
+# Writing Data
+for i in range(starting_row, last_row):
+    a = ws_read.cell(row=i, column=5).value
+    b = ws_read.cell(row=i, column=6).value
+
+    if (a!=x or b!=y):
+        for j in range (1, last_col):
+            ws_write.cell(row=write_row, column=j).value = ws_read.cell(row=i, column=j).value
+        write_row = write_row + 1
+    x = a
+    y = b
+
+wb.save(filename=file_name)
+wb.close()
